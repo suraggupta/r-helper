@@ -1,7 +1,4 @@
----
-title: "Pushover ReadMe"
-output: html_document
----
+#Pushover
 
 Many a time, we deal with R code that takes a long time to run, or in other words, I-slept-at-11-PM-woke-up-at-10-AM-my-code-is-still-running. In such cases, it might be helpful for us to have an alert set up on our smartphones to let us know that our code has completed successfully (or unsuccessfully).
 
