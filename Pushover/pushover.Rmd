@@ -1,0 +1,70 @@
+---
+title: "Guide to the pushoverr package"
+output:
+  html_document: default
+  html_notebook: default
+---
+
+This document will guide you with the setup of the "PushOver" app on your phone, and also with the setup of the necessary R package.
+
+First, install the `pushoverr` package using `install.packages()`:
+
+```{r message = FALSE, warning = FALSE}
+#Intsall the pushoverr package
+install.packages('pushoverr')
+
+#Load the package
+suppressPackageStartupMessages({
+  library(pushoverr)
+})
+```
+
+You're not quite there yet! 
+
+- To begin, go to https://pushover.net/ and create a User name and password
+- Verify your account using the verification mail in your inbox
+- The welcome page will have a "user key" on the landing page (It's pretty prominent, you could hardly miss it unless you wanted to) - save this key either in a textfile, or in a .R file (in the same format as the key-api.R file in the repo)
+- Now scroll to the bottom of the page and click on "Create an Application/API Token"
+- Enter a name for your app, check the 'TOC' box, and click "Create Application"
+- Congratulations! You now have your user-key and api token. Save this onto the key-api.R file as well.
+- Install the app on your iOS or Android device, and register your device after signing in with your user ID and password. Note that this is a 7-day trial period, and you can register your platform (iOS or Android) indefinitely for around $4 - this would mean you have to give up 2 cups of coffee if you're on a tight budget. But hey, if you prefer knowing that your code has run successfully (or otherwise), then it might be worth those two cups of coffee (Note to self: Coffee, never give up on coffee)
+
+
+Now, let's see how this works:
+
+```{r}
+source("key-api.R") #This will load your user credentials from this file.
+
+set_pushover_user(user = user_key)
+set_pushover_app(token = user_api)
+```
+
+
+Let's add this to a code chunk.
+
+```{r}
+a <- rnorm(10000000)
+pushover(message = "Your code has run. You may now eat your hamburger.",
+         device = user_device)
+```
+
+Now, we all know that our code can sometimes fail with an error. In such a scenario, we may use `tryCatch()` to let us know that our code failed.
+
+```{r}
+err <- NA
+
+tryCatch({ #Use tryCatch() to catch errors
+  log("a") 
+}, error = function(e){err <<- "Error"})
+
+if(is.na(err)) { #Message to send if code runs successfully
+  msg <- "Your code has run. You may now eat your hamburger."
+} else { #Message to send if code fails
+  msg <- "Seems like you're gonna have to starve a bit more. Your code has successfully failed."
+}
+
+pushover(message = msg,
+         device = user_device)
+```
+
+That's it! You can customize your messages, and place the `pushover()` function wherever you want to get alerts as to whether your code has run successfully or not.
